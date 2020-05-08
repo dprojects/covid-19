@@ -5,9 +5,7 @@
 .box-page {
     width: 98%;
 }
-.box-table1,
-.box-table2,
-.box-table3 {
+.box-table {
     width: 100%;
     box-shadow: 15px 15px #DDDDFF;
     padding: 0px 15px 15px 0px;
