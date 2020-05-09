@@ -10,6 +10,12 @@ covid-19 ratios show a lot.
 
 ![screen4](https://github.com/dprojects/covid-19/blob/master/screen4.png)
 
+![screen5](https://github.com/dprojects/covid-19/blob/master/screen5.png)
+
+![screen6](https://github.com/dprojects/covid-19/blob/master/screen6.png)
+
+![screen7](https://github.com/dprojects/covid-19/blob/master/screen7.png)
+
 # Install
 
     git clone https://github.com/dprojects/covid-19.git
