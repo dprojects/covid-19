@@ -1,19 +1,17 @@
-/* ----------------------------------------------------------------------------------------------------------------------------
+/* -----------------------------------------------------------------------------------------------------------------------
    GLOBALS
-   ---------------------------------------------------------------------------------------------------------------------------- */
+   -------------------------------------------------------------------------------------------------------------------- */
 
-var tTitle = '';
-var output = '';
+var gTitle = 0;
+var gPeriod = 14;
+var gTable = '';
 
-var period = 7;
-var table = '';
+var gData = '';
+var gSize = 0;
 
-var aData = '';
-var aSize = 0;
-
-/* ----------------------------------------------------------------------------------------------------------------------------
+/* -----------------------------------------------------------------------------------------------------------------------
    CALCULATIONS
-   ---------------------------------------------------------------------------------------------------------------------------- */
+   -------------------------------------------------------------------------------------------------------------------- */
 
 function getTrend(key, data, p) {
     
@@ -57,61 +55,56 @@ function getGrow(key, data, p) {
     return tGrow/p;
 }
 
-/* ----------------------------------------------------------------------------------------------------------------------------
+/* -----------------------------------------------------------------------------------------------------------------------
    BUTTONS
-   ---------------------------------------------------------------------------------------------------------------------------- */
+   -------------------------------------------------------------------------------------------------------------------- */
 
 function showDeaths() {
     
-    table.order([3, 'asc']).draw();
-    tTitle = 'Best covid-19 healthcare';
-    document.getElementById("TITLE").innerHTML = tTitle;
+    gTable.order([3, 'asc']).draw();
+    setTitle(0);
 }
 
 function showRecov() {
     
-    table.order([5, 'dsc']).draw();
-    tTitle = 'Best covid-19 population';
-    document.getElementById("TITLE").innerHTML = tTitle;
+    gTable.order([5, 'dsc']).draw();
+    setTitle(1);
 }
 
 function showConfirm() {
     
-    table.order([1, 'asc']).draw();
-    tTitle = 'Best covid-19 politics';
-    document.getElementById("TITLE").innerHTML = tTitle;
+    gTable.order([1, 'asc']).draw();
+    setTitle(2);
 }
 
 function showTrend() {
     
-    table.order([6, 'asc']).draw();
-    tTitle = 'Last '+period+' days covid-19 trend';
-    document.getElementById("TITLE").innerHTML = tTitle;
+    gTable.order([6, 'asc']).draw();
+    setTitle(3);
 }
 
 function showGrow() {
     
-    table.order([7, 'asc']).draw();
-    tTitle = 'Last '+period+' days covid-19 grow';
-    document.getElementById("TITLE").innerHTML = tTitle;
+    gTable.order([7, 'asc']).draw();
+    setTitle(4);
 }
 
-/* ----------------------------------------------------------------------------------------------------------------------------
+/* -----------------------------------------------------------------------------------------------------------------------
    SET PAGE
-   ---------------------------------------------------------------------------------------------------------------------------- */
+   -------------------------------------------------------------------------------------------------------------------- */
 
 function setPanel() {
     
     let tPanel = '';
     
     tPanel += 'Period: ';
-    tPanel += '<input type="radio" id="period1" name="period" value="7" checked="checked" onClick="setPeriod(7)" />';
+    tPanel += '<input type="radio" id="period1" name="period" value="7" onClick="setPeriod(7)" />';
     tPanel += '<label for="7">7 days</label>';
     tPanel += '&nbsp;&nbsp;';
-    tPanel += '<input type="radio" id="period2" name="period" value="14"  onClick="setPeriod(14)" />';
+    tPanel += '<input type="radio" id="period2" name="period" value="14" checked="checked" onClick="setPeriod(14)" />';
     tPanel += '<label for="14">14 days</label>';
     tPanel += '&nbsp;&nbsp;';
-    tPanel += '<input type="radio" id="period3" name="period" value="0"  onClick="setPeriod(0)" />';
+    tPanel += '<input type="radio" id="period3" name="period" value="0" onClick="setPeriod(0)" />';
     tPanel += '<label for="0">all available days</label>';
     tPanel += '</br>';
     
@@ -129,15 +122,23 @@ function setPanel() {
     tPanel += 'small down trends during this period than jumps)';
     tPanel += '</br>';
     tPanel += '<button onClick="showGrow()">show</button>';
-    tPanel += ' - sort by grow index (lower value is better, means average of confirmed % during this period is not so big)';
+    tPanel += ' - sort by grow index (lower value is better, means average of confirmed % during ';
+    tPanel += 'this period is not so big)';
     tPanel += '</br>';
     
     document.getElementById("PANEL").innerHTML = tPanel;
 }
 
-function setTitle() {
+function setTitle(t) {
     
-    tTitle = 'Best covid-19 healthcare';
+    let tTitle = ''; gTitle = t;
+    
+    if (t === 0) { tTitle = 'Best covid-19 healthcare'; }
+    if (t === 1) { tTitle = 'Best covid-19 population'; }
+    if (t === 2) { tTitle = 'Best covid-19 politics'; }
+    if (t === 3) { tTitle = 'Last '+gPeriod+' days covid-19 trend'; }
+    if (t === 4) { tTitle = 'Last '+gPeriod+' days covid-19 grow'; }
+        
     document.getElementById("TITLE").innerHTML = tTitle;
 }
 
@@ -147,26 +148,26 @@ function setTable(data) {
     
     Object.keys(data).forEach(function(key) {
 
-        aSize = data[key].length-1;
+        gSize = data[key].length-1;
 
         let col1 = key;
-        let col2 = data[key][aSize].confirmed;
-        let col3 = data[key][aSize].deaths;
+        let col2 = data[key][gSize].confirmed;
+        let col3 = data[key][gSize].deaths;
 
         let col4 = 0;
         if (col2 !== 0) {
             col4 = ( col3 / col2 ) * 100;
         }
 
-        let col5 = data[key][aSize].recovered;
+        let col5 = data[key][gSize].recovered;
 
         let col6 = 0;
         if (col2 !== 0) {
             col6 = ( col5 / col2 ) * 100;
         }
         
-        let col7 = getTrend(key, data[key], period);
-        let col8 = getGrow(key, data[key], period);
+        let col7 = getTrend(key, data[key], gPeriod);
+        let col8 = getGrow(key, data[key], gPeriod);
         
         // build table content
         tBody += '<tr>';
@@ -197,11 +198,12 @@ function setTable(data) {
     tHead += '</tr>';
     tHead += '</thead>';
 
-    output = '<div class="box-table">';
-        output += '<table id="covid-table" class="display">';
-        output += tHead + tBody;
-        output += '</table>';
-    output += '</div>';
+    
+    let tTable = '<table id="covid-table" class="display">';
+    tTable += tHead + tBody;
+    tTable += '</table>';
+
+    document.getElementById("TABLE").innerHTML = tTable;
 }
 
 function setStatus(data) {
@@ -209,59 +211,58 @@ function setStatus(data) {
     let key = Object.keys(data)[0];
     let s = data[key].length-1;
     
-    lastUpdate = data[key][s].date;
-    output += '<div class="bg-info">Last update: ' + lastUpdate + '</div>';
-}
-
-function setOutput(data) {
-
-    setTable(data);  
-    setStatus(data);   
-
-    document.getElementById("OUTPUT").innerHTML = output;
+    let tStatus = '<div class="bg-info">Last update: ';
+    tStatus += data[key][s].date;
+    tStatus += '</div>';
+    
+    document.getElementById("STATUS").innerHTML = tStatus;
 }
 
 function setPeriod(p) {
     
-    if (p === 0) { period = aSize; } else { period = p; }
-        
-    setTitle();
-    setOutput(aData);    
+    if (p === 0) { gPeriod = gSize; } else { gPeriod = p; }
     
-    table.destroy();
+    let oValue = gTable.order();
     
-    table = $('#covid-table').DataTable( {
-        "order": [[ 3, 'asc' ]],
+    setTitle(gTitle);
+    setTable(gData);    
+    
+    gTable.destroy();
+    
+    gTable = $('#covid-table').DataTable( {
         "orderClasses": true,
         responsive: true
     } );
-    new $.fn.dataTable.FixedHeader( table );        
+    new $.fn.dataTable.FixedHeader( gTable );
+    
+    gTable.order(oValue).draw();
 }
 
-/* ----------------------------------------------------------------------------------------------------------------------------
+/* -----------------------------------------------------------------------------------------------------------------------
    GET DATA & BUILD INITIAL PAGE
-   ---------------------------------------------------------------------------------------------------------------------------- */
+   -------------------------------------------------------------------------------------------------------------------- */
 
 fetch("https://pomber.github.io/covid19/timeseries.json")
   .then(response => response.json())
   .then(data => {
     
     // make backup for update output section purposes
-    aData = data;
+    gData = data;
     
     // INITIAL PAGE CONTENT
     setPanel();
-    setTitle(); 
-    setOutput(data);   
+    setTitle(0); 
+    setTable(data);  
+    setStatus(data);   
 
     // show the table
     $(document).ready( function () {
-        table = $('#covid-table').DataTable( {
+        gTable = $('#covid-table').DataTable( {
             "order": [[ 3, 'asc' ]],
             "orderClasses": true,
             responsive: true
         } );
-        new $.fn.dataTable.FixedHeader( table );        
+        new $.fn.dataTable.FixedHeader( gTable );        
     } );
 });
   
