@@ -29,8 +29,8 @@ function getTrend(key, data, p) {
           
         tDiff = data[id].confirmed - data[id-1].confirmed;
         
-        if (tDiff > tBefore) { tUp++; }
-        if (tDiff < tBefore) { tDown++; }
+        if (tDiff > tBefore) { tDown++; }
+        if (tDiff < tBefore) { tUp++; }
         
         tBefore = tDiff;
     }
