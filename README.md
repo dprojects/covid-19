@@ -1,6 +1,6 @@
 # Description
 
-covid-19 ratios show a lot.
+Sort by external predefined buttons:
 
 ![screen1](https://github.com/dprojects/covid-19/blob/master/screen1.png)
 
@@ -12,9 +12,15 @@ covid-19 ratios show a lot.
 
 ![screen5](https://github.com/dprojects/covid-19/blob/master/screen5.png)
 
+Filter place and see data and chart for all periods: 
+
 ![screen6](https://github.com/dprojects/covid-19/blob/master/screen6.png)
 
 ![screen7](https://github.com/dprojects/covid-19/blob/master/screen7.png)
+
+![screen8](https://github.com/dprojects/covid-19/blob/master/screen8.png)
+
+It is DataTable so you can sort it just by clicking the table column.
 
 # Install
 

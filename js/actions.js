@@ -3,11 +3,15 @@
    -------------------------------------------------------------------------------------------------------------------- */
 
 var gTitle = 0;
-var gPeriod = 14;
 var gTable = '';
+
+var gChart = '';
+var gChKey = '';
 
 var gData = '';
 var gSize = 0;
+
+var gPeriod = 14;
 
 /* -----------------------------------------------------------------------------------------------------------------------
    CALCULATIONS
@@ -61,32 +65,37 @@ function getGrow(key, data, p) {
 
 function showDeaths() {
     
-    gTable.order([3, 'asc']).draw();
+    gTable.order([4, 'asc']).draw();
     setTitle(0);
 }
 
 function showRecov() {
     
-    gTable.order([5, 'dsc']).draw();
+    gTable.order([6, 'dsc']).draw();
     setTitle(1);
 }
 
 function showConfirm() {
     
-    gTable.order([1, 'asc']).draw();
+    gTable.order([2, 'asc']).draw();
     setTitle(2);
 }
 
 function showTrend() {
     
-    gTable.order([6, 'asc']).draw();
+    gTable.order([7, 'asc']).draw();
     setTitle(3);
 }
 
 function showGrow() {
     
-    gTable.order([7, 'asc']).draw();
+    gTable.order([8, 'asc']).draw();
     setTitle(4);
+}
+
+function showChart(key) {
+    
+    setChart(key, gData[key], gPeriod);
 }
 
 /* -----------------------------------------------------------------------------------------------------------------------
@@ -104,8 +113,11 @@ function setPanel() {
     tPanel += '<input type="radio" id="period2" name="period" value="14" checked="checked" onClick="setPeriod(14)" />';
     tPanel += '<label for="14">14 days</label>';
     tPanel += '&nbsp;&nbsp;';
-    tPanel += '<input type="radio" id="period3" name="period" value="0" onClick="setPeriod(0)" />';
-    tPanel += '<label for="0">all available days</label>';
+    tPanel += '<input type="radio" id="period3" name="period" value="30" onClick="setPeriod(30)" />';
+    tPanel += '<label for="30">30 days</label>';
+    tPanel += '&nbsp;&nbsp;';
+    tPanel += '<input type="radio" id="period4" name="period" value="0" onClick="setPeriod(0)" />';
+    tPanel += '<label for="0">all available</label>';
     tPanel += '</br>';
     
     tPanel += '<button onClick="showDeaths()">show</button>';
@@ -149,8 +161,9 @@ function setTable(data) {
     Object.keys(data).forEach(function(key) {
 
         gSize = data[key].length-1;
-
-        let col1 = key;
+                
+        let col0 = key;
+        let col1 = '<button onClick="showChart(\''+key+'\')">show</button>';
         let col2 = data[key][gSize].confirmed;
         let col3 = data[key][gSize].deaths;
 
@@ -171,6 +184,7 @@ function setTable(data) {
         
         // build table content
         tBody += '<tr>';
+        tBody += '<td class="col0">' + col0 + '</td>';
         tBody += '<td class="col1">' + col1 + '</td>';
         tBody += '<td class="col2">' + col2 + '</td>';
         tBody += '<td class="col3">' + col3 + '</td>';
@@ -187,7 +201,8 @@ function setTable(data) {
     // header for table
     let tHead = '<thead>';
     tHead += '<tr>';
-    tHead += '<th class="col1">Place</th>';
+    tHead += '<th class="col0">Place</th>';
+    tHead += '<th class="col1">Chart</th>';
     tHead += '<th class="col2">Confirmed</th>';
     tHead += '<th class="col3">Deaths</th>';
     tHead += '<th class="col4">Deaths %</th>';
@@ -204,6 +219,71 @@ function setTable(data) {
     tTable += '</table>';
 
     document.getElementById("TABLE").innerHTML = tTable;
+}
+
+function setChart(key, data, p) {
+    
+    let tX = []
+    let tYc = [], tYd = [], tYr = [];
+    
+    gChKey = key;
+    
+    // calculation
+    for(let i=p-1; i>=0; i--) {
+        
+        let id = gSize-i;
+        tX.push(data[id].date);
+        tYc.push(data[id].confirmed - data[id-1].confirmed);
+        tYd.push(data[id].deaths - data[id-1].deaths);
+        tYr.push(data[id].recovered - data[id-1].recovered);
+    }
+    
+    // settings
+    var ChartData = {
+      labels : tX,
+      datasets : [
+        {
+          label : key+' (confirmed)',
+          borderWidth : 1,
+          borderColor : "#0000FF",
+          backgroundColor : "#DDDDFF",
+          data : tYc
+        },
+        {
+          label: key+' (deaths)',
+          borderWidth : 1,
+          borderColor : "#FF0000",
+          backgroundColor : "#FFDDDD",
+          data : tYd
+        },
+        {
+          label: key+' (recovered)',
+          borderWidth : 1,
+          borderColor : "#00FF00",
+          backgroundColor : "#DDFFDD",
+          data : tYr
+        }
+      ]
+    };
+    
+    var GlobalOptions = {
+      responsive: true,
+      animationEasing: "easeOutElastic"
+    };
+
+    // show chart box
+    document.getElementById('box-chart').style.display = 'block';
+
+    // clear old one, avoid multiple instances (old chart versions bumps out on hover)
+    if (gChart !== '') { gChart.destroy(); }
+    
+    // show new chart
+    var ctx = document.getElementById('CHART');
+    gChart = new Chart(ctx, {
+            type: 'line',
+            data: ChartData,
+            options: GlobalOptions
+    });
 }
 
 function setStatus(data) {
@@ -223,6 +303,7 @@ function setPeriod(p) {
     if (p === 0) { gPeriod = gSize; } else { gPeriod = p; }
     
     let oValue = gTable.order();
+    let sValue = $('.dataTables_filter input').val();
     
     setTitle(gTitle);
     setTable(gData);    
@@ -236,6 +317,11 @@ function setPeriod(p) {
     new $.fn.dataTable.FixedHeader( gTable );
     
     gTable.order(oValue).draw();
+    gTable.search(sValue).draw();
+    
+    if (gChart !== '') { 
+        setChart(gChKey, gData[gChKey], gPeriod);
+    }
 }
 
 /* -----------------------------------------------------------------------------------------------------------------------
@@ -258,7 +344,7 @@ fetch("https://pomber.github.io/covid19/timeseries.json")
     // show the table
     $(document).ready( function () {
         gTable = $('#covid-table').DataTable( {
-            "order": [[ 3, 'asc' ]],
+            "order": [[ 4, 'asc' ]],
             "orderClasses": true,
             responsive: true
         } );
