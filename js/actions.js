@@ -14,6 +14,70 @@ var gSize = 0;
 var gPeriod = 14;
 
 /* -----------------------------------------------------------------------------------------------------------------------
+   BUTTONS
+   -------------------------------------------------------------------------------------------------------------------- */
+
+function showDeaths(type) {
+    
+    if (type > 0) {
+        gTable.order([4, 'asc'],[2, 'dsc']).draw();
+        setTitle(1);
+    } else {
+        gTable.order([4, 'dsc'],[2, 'asc']).draw();
+        setTitle(-1);
+    }
+}
+
+function showRecov(type) {
+    
+    if (type > 0) {
+        gTable.order([6, 'dsc'],[2, 'dsc']).draw();
+        setTitle(2);
+    } else {
+        gTable.order([6, 'asc'],[2, 'asc']).draw();
+        setTitle(-2);
+    }
+}
+
+function showConfirm(type) {
+    
+    if (type > 0) {
+        gTable.order([2, 'asc'],[4, 'asc'],[6, 'dsc']).draw();
+        setTitle(3);
+    } else {
+        gTable.order([2, 'dsc'],[4, 'dsc'],[6, 'asc']).draw();
+        setTitle(-3);
+    }
+}
+
+function showTrend(type) {
+    
+    if (type > 0) {
+        gTable.order([7, 'asc'],[6, 'dsc']).draw();
+        setTitle(4);
+    } else {
+        gTable.order([7, 'dsc'],[6, 'asc']).draw();
+        setTitle(-4);
+    }
+}
+
+function showGrow(type) {
+    
+    if (type > 0) {
+        gTable.order([8, 'asc'],[6, 'dsc']).draw();
+        setTitle(5);
+    } else {
+        gTable.order([8, 'dsc'],[6, 'asc']).draw();
+        setTitle(-5);
+    }
+}
+
+function showChart(key) {
+    
+    setChart(key, gData[key], gPeriod);
+}
+
+/* -----------------------------------------------------------------------------------------------------------------------
    CALCULATIONS
    -------------------------------------------------------------------------------------------------------------------- */
 
@@ -60,51 +124,30 @@ function getGrow(key, data, p) {
 }
 
 /* -----------------------------------------------------------------------------------------------------------------------
-   BUTTONS
-   -------------------------------------------------------------------------------------------------------------------- */
-
-function showDeaths() {
-    
-    gTable.order([4, 'asc']).draw();
-    setTitle(0);
-}
-
-function showRecov() {
-    
-    gTable.order([6, 'dsc']).draw();
-    setTitle(1);
-}
-
-function showConfirm() {
-    
-    gTable.order([2, 'asc']).draw();
-    setTitle(2);
-}
-
-function showTrend() {
-    
-    gTable.order([7, 'asc']).draw();
-    setTitle(3);
-}
-
-function showGrow() {
-    
-    gTable.order([8, 'asc']).draw();
-    setTitle(4);
-}
-
-function showChart(key) {
-    
-    setChart(key, gData[key], gPeriod);
-}
-
-/* -----------------------------------------------------------------------------------------------------------------------
    SET PAGE
    -------------------------------------------------------------------------------------------------------------------- */
 
 function setPanel() {
     
     let tPanel = '';
+    
+    tPanel += '<button onClick="showDeaths(1)" class="best">show best</button>';
+    tPanel += '&nbsp;&nbsp;';
+    tPanel += '<button onClick="showDeaths(-1)" class="worst">show worst</button>';
+    tPanel += ' - covid-19 healthcare (multi-sort by Deaths %, Confirmed)';
+    tPanel += '</br>';
+    
+    tPanel += '<button onClick="showRecov(2)" class="best">show best</button>';
+    tPanel += '&nbsp;&nbsp;';
+    tPanel += '<button onClick="showRecov(-2)" class="worst">show worst</button>';
+    tPanel += ' - covid-19 population resistent (multi-sort by Recovered %, Confirmed)';
+    tPanel += '</br>';
+    
+    tPanel += '<button onClick="showConfirm(3)" class="best">show best</button>';
+    tPanel += '&nbsp;&nbsp;';
+    tPanel += '<button onClick="showConfirm(-3)" class="worst">show worst</button>';
+    tPanel += ' - covid-19 politics (multi-sort by Confirmed, Deaths %, Recovered %)';
+    tPanel += '</br>';
     
     tPanel += 'Period: ';
     tPanel += '<input type="radio" id="period1" name="period" value="7" onClick="setPeriod(7)" />';
@@ -119,24 +162,17 @@ function setPanel() {
     tPanel += '<input type="radio" id="period4" name="period" value="0" onClick="setPeriod(0)" />';
     tPanel += '<label for="0">all available</label>';
     tPanel += '</br>';
+        
+    tPanel += '<button onClick="showTrend(4)" class="best">show best</button>';
+    tPanel += '&nbsp;&nbsp;';
+    tPanel += '<button onClick="showTrend(-4)" class="worst">show worst</button>';
+    tPanel += ' - multi-sort by Trend index (daily confirmed small trends during this period) and Recovered %';
+    tPanel += '</br>';
     
-    tPanel += '<button onClick="showDeaths()">show</button>';
-    tPanel += ' - best covid-19 healthcare (sort by Deaths % - it is default view)';
-    tPanel += '</br>';
-    tPanel += '<button onClick="showRecov()">show</button>';
-    tPanel += ' - best covid-19 population resistent (sort by Recovered %)';
-    tPanel += '</br>';
-    tPanel += '<button onClick="showConfirm()">show</button>';
-    tPanel += ' - best covid-19 politics (sort by Confirmed)';
-    tPanel += '</br>';
-    tPanel += '<button onClick="showTrend()">show</button>';
-    tPanel += ' - sort by trend index (lower value is better, there is more daily confirmed ';
-    tPanel += 'small down trends during this period than jumps)';
-    tPanel += '</br>';
-    tPanel += '<button onClick="showGrow()">show</button>';
-    tPanel += ' - sort by grow index (lower value is better, means average of confirmed % during ';
-    tPanel += 'this period is not so big)';
-    tPanel += '</br>';
+    tPanel += '<button onClick="showGrow(5)" class="best">show best</button>';
+    tPanel += '&nbsp;&nbsp;';
+    tPanel += '<button onClick="showGrow(-5)" class="worst">show worst</button>';
+    tPanel += ' - multi-sort by Grow % index (daily average of confirmed % during this period) and Recovered %';
     
     document.getElementById("PANEL").innerHTML = tPanel;
 }
@@ -145,11 +181,17 @@ function setTitle(t) {
     
     let tTitle = ''; gTitle = t;
     
-    if (t === 0) { tTitle = 'Best covid-19 healthcare'; }
-    if (t === 1) { tTitle = 'Best covid-19 population'; }
-    if (t === 2) { tTitle = 'Best covid-19 politics'; }
-    if (t === 3) { tTitle = 'Last '+gPeriod+' days covid-19 trend'; }
-    if (t === 4) { tTitle = 'Last '+gPeriod+' days covid-19 grow'; }
+    if (t === 1) { tTitle = 'Best covid-19 healthcare'; }
+    if (t === 2) { tTitle = 'Best covid-19 population resistent'; }
+    if (t === 3) { tTitle = 'Best covid-19 politics'; }
+    if (t === 4) { tTitle = 'Best covid-19 trend (for last '+gPeriod+' days)'; }
+    if (t === 5) { tTitle = 'Best covid-19 grow % (for last '+gPeriod+' days)'; }
+    
+    if (t === -1) { tTitle = 'Worst covid-19 healthcare'; }
+    if (t === -2) { tTitle = 'Worst covid-19 population resistent'; }
+    if (t === -3) { tTitle = 'Worst covid-19 politics'; }
+    if (t === -4) { tTitle = 'Worst covid-19 trend (for last '+gPeriod+' days)'; }
+    if (t === -5) { tTitle = 'Worst covid-19 grow % (for last '+gPeriod+' days)'; }
         
     document.getElementById("TITLE").innerHTML = tTitle;
 }
@@ -337,18 +379,17 @@ fetch("https://pomber.github.io/covid19/timeseries.json")
     
     // INITIAL PAGE CONTENT
     setPanel();
-    setTitle(0); 
     setTable(data);  
     setStatus(data);   
 
     // show the table
     $(document).ready( function () {
         gTable = $('#covid-table').DataTable( {
-            "order": [[ 4, 'asc' ]],
             "orderClasses": true,
             responsive: true
         } );
-        new $.fn.dataTable.FixedHeader( gTable );        
-    } );
+        new $.fn.dataTable.FixedHeader( gTable );
+        showDeaths(1);
+    });
 });
   

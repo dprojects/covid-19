@@ -3,35 +3,34 @@
    -------------------------------------------------------------------------------------------------------------------- */
 
 .box-page {
-    width: 98%;
+    width: 100%;
 }
 .box-panel {
-    width: 100%;
-    padding: 0px 15px 15px 0px;
-    margin-bottom: 5px;
+    width: auto;
+    margin: 0px 0px 15px 0px;
 }
 .box-title {
-    width: 100%;
+    width: auto;
+    background-color: #DDDDFF;
     font-size: 30px;
     font-weight: bold;
-    margin-bottom: 30px;
-    background-color: #DDDDFF;
+    margin: 0px 0px 15px 0px;
 }
 .box-table {
-    width: 100%;
+    width: auto;
     box-shadow: 15px 15px #DDDDFF;
     padding: 0px 15px 15px 0px;
-    margin-bottom: 15px;
+    margin: 0px 15px 15px 0px;
 }
 .box-chart {
-    width: 100% !important;
-    height: 300px !important;
-    padding: 0px 15px 15px 0px;
-    margin-bottom: 15px;
+    width: auto;
+    height: auto;
+    margin: 0px 0px 15px 0px;
     display: none;
 }
 .box-status {
-    width: 100%;
+    width: auto;
+    margin: 0px;
 }
 
 /* -----------------------------------------------------------------------------------------------------------------------
@@ -43,11 +42,24 @@
     border: none;
     margin-bottom: 5px;
 }
-.box-table button{
+.box-panel button.best {
+    background-color: #AAFFAA;
+    border: none;
+    margin-bottom: 5px;
+}
+.box-panel button.worst {
+    background-color: #FFAAAA;
+    border: none;
+    margin-bottom: 5px;
+}
+.box-table button {
     background-color: #AAAAFF;
     border: none;
 }
 .box-chart canvas {
     width: 100% !important;
-    height: 300px !important;
+    height: 330px !important;
+}
+#covid-table {
+    width: auto !important;
 }
