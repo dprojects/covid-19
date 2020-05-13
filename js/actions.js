@@ -42,10 +42,10 @@ function showRecov(type) {
 function showConfirm(type) {
     
     if (type > 0) {
-        gTable.order([2, 'asc'],[4, 'asc'],[6, 'dsc']).draw();
+        gTable.order([2, 'asc'],[8, 'asc']).draw();
         setTitle(3);
     } else {
-        gTable.order([2, 'dsc'],[4, 'dsc'],[6, 'asc']).draw();
+        gTable.order([2, 'dsc'],[8, 'dsc']).draw();
         setTitle(-3);
     }
 }
@@ -140,13 +140,13 @@ function setPanel() {
     tPanel += '<button onClick="showRecov(2)" class="best">show best</button>';
     tPanel += '&nbsp;&nbsp;';
     tPanel += '<button onClick="showRecov(-2)" class="worst">show worst</button>';
-    tPanel += ' - covid-19 population resistent (multi-sort by Recovered %, Confirmed)';
+    tPanel += ' - covid-19 population resistance (multi-sort by Recovered %, Confirmed)';
     tPanel += '</br>';
     
     tPanel += '<button onClick="showConfirm(3)" class="best">show best</button>';
     tPanel += '&nbsp;&nbsp;';
     tPanel += '<button onClick="showConfirm(-3)" class="worst">show worst</button>';
-    tPanel += ' - covid-19 politics (multi-sort by Confirmed, Deaths %, Recovered %)';
+    tPanel += ' - covid-19 politics (multi-sort by Confirmed, Grow %)';
     tPanel += '</br>';
     
     tPanel += 'Period: ';
@@ -182,13 +182,13 @@ function setTitle(t) {
     let tTitle = ''; gTitle = t;
     
     if (t === 1) { tTitle = 'Best covid-19 healthcare'; }
-    if (t === 2) { tTitle = 'Best covid-19 population resistent'; }
+    if (t === 2) { tTitle = 'Best covid-19 population resistance'; }
     if (t === 3) { tTitle = 'Best covid-19 politics'; }
     if (t === 4) { tTitle = 'Best covid-19 trend (for last '+gPeriod+' days)'; }
     if (t === 5) { tTitle = 'Best covid-19 grow % (for last '+gPeriod+' days)'; }
     
     if (t === -1) { tTitle = 'Worst covid-19 healthcare'; }
-    if (t === -2) { tTitle = 'Worst covid-19 population resistent'; }
+    if (t === -2) { tTitle = 'Worst covid-19 population resistance'; }
     if (t === -3) { tTitle = 'Worst covid-19 politics'; }
     if (t === -4) { tTitle = 'Worst covid-19 trend (for last '+gPeriod+' days)'; }
     if (t === -5) { tTitle = 'Worst covid-19 grow % (for last '+gPeriod+' days)'; }
