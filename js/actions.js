@@ -84,12 +84,14 @@ function showChart(key) {
 function getTrend(key, data, p) {
     
     let tIndex = 0, tUp = 0, tDown = 0;
+    let tBefore = 0, tDiff = 0;
     let size = data.length-1;
      
     for(let i=0; i<p; i++) {
         
         let id = size-i;
-        let tDiff = data[id].confirmed - data[id-1].confirmed;
+        
+        tDiff = data[id].confirmed - data[id-1].confirmed;
         
         // skip invalid data
         if (tDiff < 0) { continue; }
@@ -97,7 +99,7 @@ function getTrend(key, data, p) {
         if (tDiff > tBefore) { tDown++; }
         if (tDiff < tBefore) { tUp++; }
         
-        let tBefore = tDiff;
+        tBefore = tDiff;
     }
     
     if (tUp > p/2 || tDown > p/2) {
