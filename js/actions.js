@@ -84,19 +84,20 @@ function showChart(key) {
 function getTrend(key, data, p) {
     
     let tIndex = 0, tUp = 0, tDown = 0;
-    let tBefore = 0, tDiff = 0;
     let size = data.length-1;
      
     for(let i=0; i<p; i++) {
         
         let id = size-i;
-          
-        tDiff = data[id].confirmed - data[id-1].confirmed;
+        let tDiff = data[id].confirmed - data[id-1].confirmed;
+        
+        // skip invalid data
+        if (tDiff < 0) { continue; }
         
         if (tDiff > tBefore) { tDown++; }
         if (tDiff < tBefore) { tUp++; }
         
-        tBefore = tDiff;
+        let tBefore = tDiff;
     }
     
     if (tUp > p/2 || tDown > p/2) {
@@ -113,11 +114,15 @@ function getGrow(key, data, p) {
     for(let i=0; i<p; i++) {
         
         let id = size-i;
+        let tDiff = data[id].confirmed - data[id-1].confirmed;
+        
+        // skip invalid data
+        if (tDiff < 0) { continue; }
         
         if (data[id].confirmed === 0) {
             tGrow += 0;
         } else {
-            tGrow += ( (data[id].confirmed - data[id-1].confirmed) / data[id].confirmed ) * 100;
+            tGrow += ( tDiff / data[id].confirmed ) * 100;
         }
     }
     return tGrow/p;
@@ -254,7 +259,6 @@ function setTable(data) {
     tHead += '<th class="col8">Grow %</th>';
     tHead += '</tr>';
     tHead += '</thead>';
-
     
     let tTable = '<table id="covid-table" class="display">';
     tTable += tHead + tBody;
@@ -274,10 +278,17 @@ function setChart(key, data, p) {
     for(let i=p-1; i>=0; i--) {
         
         let id = gSize-i;
+        
+        let yc = data[id].confirmed - data[id-1].confirmed;
+        let yd = data[id].deaths - data[id-1].deaths;
+        let yr = data[id].recovered - data[id-1].recovered;
+        
         tX.push(data[id].date);
-        tYc.push(data[id].confirmed - data[id-1].confirmed);
-        tYd.push(data[id].deaths - data[id-1].deaths);
-        tYr.push(data[id].recovered - data[id-1].recovered);
+        
+        // skip invalid data
+        if (yc > 0) { tYc.push(yc); } else { tYc.push(0); }
+        if (yd > 0) { tYd.push(yd); } else { tYd.push(0); }
+        if (yr > 0) { tYr.push(yr); } else { tYr.push(0); }
     }
     
     // settings
