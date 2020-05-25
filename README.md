@@ -2,14 +2,7 @@
 
 Web browser tool for covid-19 data data tracking and analysis. 
 
-> ![screen0](https://github.com/dprojects/covid-19/blob/master/screenshots/screen0.png)
-
-Data sources: 
-
-- [Pomber](https://github.com/pomber/covid19)
-- [Hopkins](https://github.com/CSSEGISandData/COVID-19)
-
-# Features
+### Features:
 
 - Data source selector (Pomber, Hopkins).
 - `Confirmed`, `Deaths`, `Recovered`.
@@ -24,7 +17,12 @@ Data sources:
 - Always actual data (data get in real time).
 - Everything is responsvie (fit to screen).
 
-# Screen examples
+### Data sources: 
+
+- [Pomber](https://github.com/pomber/covid19)
+- [Hopkins](https://github.com/CSSEGISandData/COVID-19)
+
+> ![screen0](https://github.com/dprojects/covid-19/blob/master/screenshots/screen0.png)
 
 ### Panel with options:
 
@@ -51,7 +49,6 @@ Data sources:
 ### Everything is resposive: 
 
 > ![screen8](https://github.com/dprojects/covid-19/blob/master/screenshots/screen8.png)
-
 
 # Install
 
