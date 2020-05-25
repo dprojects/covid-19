@@ -62,7 +62,7 @@ function setGlobal(path, type) {
                     let dD = (d.getDate()).toString();
                     let dY = (d.getFullYear()).toString();
 
-                    gData[key][i].date = dM+'-'+dD+'-'+dY;                    
+                    gData[key][i].date = dY+'-'+dM+'-'+dD;                    
                 }
             }
         }
