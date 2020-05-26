@@ -10,6 +10,7 @@ var gChKey = '';
 
 var gData = {};
 var gSize = 0;
+var novalue = '-';
 
 var gPeriod = 14;
 
@@ -99,20 +100,20 @@ function getPomber() {
 }
 
 /* -----------------------------------------------------------------------------------------------------------------------
-   CUSTOM DATA SORT (if no value there is '-')
+   CUSTOM DATA SORT (if no data available there is novalue pattern)
    -------------------------------------------------------------------------------------------------------------------- */
 
 $.extend( $.fn.dataTableExt.oSort, {
-    
+
     "sethigh-asc": function ( a, b ) {
         
         let x = a;
         let y = b;
         
-             if (x == "-" && y != "-") { return  1; }
-        else if (x != "-" && y == "-") { return -1; }
-        else if (x == "-" && y == "-") { return  0; }
-        else if (x != "-" && y != "-") { 
+             if (x == novalue && y != novalue) { return  1; }
+        else if (x != novalue && y == novalue) { return -1; }
+        else if (x == novalue && y == novalue) { return  0; }
+        else if (x != novalue && y != novalue) { 
             
             x = parseFloat(a); 
             y = parseFloat(b);
@@ -125,10 +126,10 @@ $.extend( $.fn.dataTableExt.oSort, {
         let x = a;
         let y = b;
         
-             if (x == "-" && y != "-") { return -1; }
-        else if (x != "-" && y == "-") { return  1; }
-        else if (x == "-" && y == "-") { return  0; }
-        else if (x != "-" && y != "-") { 
+             if (x == novalue && y != novalue) { return -1; }
+        else if (x != novalue && y == novalue) { return  1; }
+        else if (x == novalue && y == novalue) { return  0; }
+        else if (x != novalue && y != novalue) { 
             
             x = parseFloat(a); 
             y = parseFloat(b);            
@@ -142,10 +143,10 @@ $.extend( $.fn.dataTableExt.oSort, {
         let x = a;
         let y = b;
         
-             if (x == "-" && y != "-") { return -1; }
-        else if (x != "-" && y == "-") { return  1; }
-        else if (x == "-" && y == "-") { return  0; }
-        else if (x != "-" && y != "-") { 
+             if (x == novalue && y != novalue) { return -1; }
+        else if (x != novalue && y == novalue) { return  1; }
+        else if (x == novalue && y == novalue) { return  0; }
+        else if (x != novalue && y != novalue) { 
             
             x = parseFloat(a); 
             y = parseFloat(b);
@@ -158,10 +159,10 @@ $.extend( $.fn.dataTableExt.oSort, {
         let x = a;
         let y = b;
         
-             if (x == "-" && y != "-") { return  1; }
-        else if (x != "-" && y == "-") { return -1; }
-        else if (x == "-" && y == "-") { return  0; }
-        else if (x != "-" && y != "-") { 
+             if (x == novalue && y != novalue) { return  1; }
+        else if (x != novalue && y == novalue) { return -1; }
+        else if (x == novalue && y == novalue) { return  0; }
+        else if (x != novalue && y != novalue) { 
             
             x = parseFloat(a); 
             y = parseFloat(b);            
@@ -202,7 +203,7 @@ function getTrend(key, data, p) {
     
     if (tUp === tDown) { return 0; }
     if (tUp > p/2 || tDown > p/2) { tIndex = tUp - tDown; return tIndex; }
-    return '-';
+    return novalue;
 }
 
 function getGrow(key, data, p) {
@@ -233,8 +234,7 @@ function getGrow(key, data, p) {
     }
     
     if (j > p/2) { return tGrow/p; }
-    
-    return '-';
+    return novalue;
 }
 
 /* -----------------------------------------------------------------------------------------------------------------------
@@ -309,17 +309,17 @@ function setTable(data) {
                 
         let col0 = key;
         let col1 = '<button onClick="showChart(\''+key+'\')">show</button>';
-        let col2 = (typeof data[key][gSize].confirmed !== 'undefined') ? data[key][gSize].confirmed : '-';
-        let col3 = (typeof data[key][gSize].deaths !== 'undefined') ? data[key][gSize].deaths : '-';
+        let col2 = (typeof data[key][gSize].confirmed !== 'undefined') ? data[key][gSize].confirmed : novalue;
+        let col3 = (typeof data[key][gSize].deaths !== 'undefined') ? data[key][gSize].deaths : novalue;
 
         let col4 = 0;
-        if (col3 === '-' || col2 === '-') { col4 = '-'; }
-        else if (col2 !== 0 && col2 !== '-') { col4 = ( col3 / col2 ) * 100; }
+        if (col3 === novalue || col2 === novalue) { col4 = novalue; }
+        else if (col2 !== 0 && col2 !== novalue) { col4 = ( col3 / col2 ) * 100; }
 
-        let col5 = (typeof data[key][gSize].recovered !== 'undefined') ? data[key][gSize].recovered : '-';
+        let col5 = (typeof data[key][gSize].recovered !== 'undefined') ? data[key][gSize].recovered : novalue;
 
         let col6 = 0;
-        if (col5 === '-' || col2 === '-') { col6 = '-'; }
+        if (col5 === novalue || col2 === novalue) { col6 = novalue; }
         else if (col2 !== 0) { col6 = ( col5 / col2 ) * 100; }
         
         let col7 = getTrend(key, data[key], gPeriod);
@@ -331,11 +331,11 @@ function setTable(data) {
         tBody += '<td class="col1">' + col1 + '</td>';
         tBody += '<td class="col2">' + col2 + '</td>';
         tBody += '<td class="col3">' + col3 + '</td>';
-        tBody += '<td class="col4">' +( col4 !== '-' ? col4.toFixed(2) : '-' )+ '</td>';
+        tBody += '<td class="col4">' +( col4 !== novalue ? col4.toFixed(2) : novalue )+ '</td>';
         tBody += '<td class="col5">' + col5 + '</td>';
-        tBody += '<td class="col6">' +( col6 !== '-' ? col6.toFixed(2) : '-' )+ '</td>';
+        tBody += '<td class="col6">' +( col6 !== novalue ? col6.toFixed(2) : novalue )+ '</td>';
         tBody += '<td class="col7">' + col7 + '</td>';
-        tBody += '<td class="col8">' +( col8 !== '-' ? col8.toFixed(2) : '-' )+ '</td>';
+        tBody += '<td class="col8">' +( col8 !== novalue ? col8.toFixed(2) : novalue )+ '</td>';
         tBody += '</tr>';
     });
 
